@@ -1,0 +1,12 @@
+{
+  "name": "kindle-dashboard",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "render": "node dashboard/render.mjs"
+  },
+  "dependencies": {
+    "playwright": "^1.48.0",
+    "node-ical": "^0.20.1"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "city": "济南",
+  "latitude": 36.6512,
+  "longitude": 117.1201,
+  "timezone": "Asia/Shanghai",
+  "calendarIcsUrl": "",
+  "todoIcsUrl": "",
+  "todoFile": "dashboard/todo.txt",
+  "width": 1448,
+  "height": 1072,
+  "showJar": true
+}

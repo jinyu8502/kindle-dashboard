@@ -1,0 +1,25 @@
+{
+  "items": [
+    {
+      "name": "启动看板",
+      "priority": 1,
+      "action": "bin/start.sh",
+      "exitmenu": false,
+      "status": false
+    },
+    {
+      "name": "停止看板",
+      "priority": 2,
+      "action": "bin/stop.sh",
+      "exitmenu": false,
+      "status": false
+    },
+    {
+      "name": "测试图片地址",
+      "priority": 3,
+      "action": "bin/test-url.sh",
+      "exitmenu": false,
+      "status": false
+    }
+  ]
+}
