@@ -39,9 +39,12 @@ jobs:
       - name: 生成图片
         run: node dashboard/render.mjs
 
-      # 横屏版：把图旋转 90 度再上传，Kindle 横放（顶部朝左）才显示正确
-      - name: 旋转图片（横屏）
-        run: convert out/dashboard.png -rotate 90 out/dashboard.png
+      # Kindle 屏幕要求：1072×1448、8 位灰度、逆时针转 90°
+      # eips 是"原样贴图"，格式错了会只画出一条
+      - name: 转成 Kindle 屏幕格式
+        run: |
+          convert out/dashboard.png -rotate 270 -colorspace Gray -depth 8 \
+            -define png:bit-depth=8 -define png:color-type=0 out/dashboard.png
 
       - name: 提交回仓库
         run: |
