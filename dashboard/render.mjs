@@ -214,9 +214,17 @@ async function getTodos() {
         if (e.type !== 'VEVENT' && e.type !== 'VTODO') continue;
         const raw = new Date(e.start || e.due || e.created);
         if (isNaN(raw.getTime())) continue;
+        // 滴答清单在清单为空时会塞一条占位：SUMMARY:No task. —— 跳过它
+        if (/^no task\.?$/i.test(String(e.summary || '').trim())) continue;
         const finished = String(e.status || '').toUpperCase() === 'COMPLETED'
           || /^[✓√]/.test(String(e.summary || ''));
-        if (finished) { done++; continue; }
+        // 已完成的任务：只把"今天完成"的算进猫粮罐（订阅里会带最近3个月的已完成，
+        // 不筛日期的话，上周的完成量会把罐子撑满，失去"今日完成率"的意义）
+        if (finished) {
+          const finRaw = new Date(e.completed || e.due || e.start);
+          if (!isNaN(finRaw.getTime()) && startOfDay(finRaw).getTime() === today.getTime()) done++;
+          continue;
+        }
         const due = startOfDay(raw);
         const item = { title: String(e.summary || '（无标题）').slice(0, 30), due, short: shortDate(due) };
         total++;
@@ -932,6 +940,12 @@ const page = await browser.newPage({
   deviceScaleFactor: 1,
 });
 await page.setContent(html, { waitUntil: 'networkidle' });
+// 等所有字体和图片真正就绪再截图，防止云端偶发出一张半成品
+await page.evaluate(() => Promise.all([
+  document.fonts ? document.fonts.ready : Promise.resolve(),
+  ...Array.from(document.images).map(img => img.decode().catch(() => {})),
+]));
+await page.waitForTimeout(800);
 await page.screenshot({ path: path.join(outDir, 'dashboard.png'), type: 'png' });
 await browser.close();
 
